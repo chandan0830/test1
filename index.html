@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		    <meta charset="UTF-8">
+		        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+			    <title>Bubble Game</title>
+			        <style>
+        body {
+		            margin: 0;
+			                overflow: hidden;
+					            background: linear-gradient(to top, #87ceeb, #ffffff);
+						                font-family: Arial, sans-serif;
+								        }
+
+	        #gameCanvas {
+			            display: block;
+				            }
+
+		        #score {
+				            position: absolute;
+					                top: 10px;
+							            left: 10px;
+								                font-size: 24px;
+										            color: #333;
+											                background: rgba(255, 255, 255, 0.7);
+													            padding: 5px 10px;
+														                border-radius: 5px;
+																        }
+			    </style>
+	</head>
+	<body>
+		    <div id="score">Score: 0</div>
+		        <canvas id="gameCanvas"></canvas>
+
+			    <script>
+				            const canvas = document.getElementById('gameCanvas');
+				            const ctx = canvas.getContext('2d');
+
+				            canvas.width = window.innerWidth;
+				            canvas.height = window.innerHeight;
+
+				            let bubbles = [];
+				            let score = 0;
+
+				            class Bubble {
+											            constructor() {
+																		                this.radius = Math.random() * 30 + 10;
+																		                this.x = Math.random() * (canvas.width - this.radius * 2) + this.radius;
+																		                this.y = canvas.height + this.radius;
+																		                this.speed = Math.random() * 2 + 1;
+																		                this.color = `rgba(${Math.floor(Math.random()*255)}, ${Math.floor(Math.random()*255)}, ${Math.floor(Math.random()*255)}, 0.7)`;
+																		            }
+
+											            draw() {
+																		                ctx.beginPath();
+																		                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+																		                ctx.fillStyle = this.color;
+																		                ctx.fill();
+																		                ctx.closePath();
+																		            }
+
+											            update() {
+																		                this.y -= this.speed;
+																		            }
+											        }
+
+				            function spawnBubble() {
+											            bubbles.push(new Bubble());
+											        }
+
+				            function animate() {
+											            ctx.clearRect(0, 0, canvas.width, canvas.height);
+											            
+											            for (let i = 0; i < bubbles.length; i++) {
+																		                bubbles[i].update();
+																		                bubbles[i].draw();
+
+																		                // Remove bubble if it goes off screen
+																		                if (bubbles[i].y + bubbles[i].radius < 0) {
+																									                        bubbles.splice(i, 1);
+																									                        i--;
+																									                    }
+																		            }
+
+											            requestAnimationFrame(animate);
+											        }
+
+				            canvas.addEventListener('click', (e) => {
+											            const mouseX = e.clientX;
+											            const mouseY = e.clientY;
+
+											            for (let i = 0; i < bubbles.length; i++) {
+																		                const dx = bubbles[i].x - mouseX;
+																		                const dy = bubbles[i].y - mouseY;
+																		                if (Math.sqrt(dx * dx + dy * dy) < bubbles[i].radius) {
+																									                        bubbles.splice(i, 1);
+																									                        score++;
+																									                        document.getElementById('score').textContent = `Score: ${score}`;
+																									                        break;
+																									                    }
+																		            }
+											        });
+
+				            // Spawn bubbles periodically
+				            setInterval(spawnBubble, 500);
+
+				            animate();
+				        </script>
+	</body>
+</html>
+

@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: blockchain-deploy
+  labels:
+    name: app
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: app
+      version: v1
+    template:
+      metadata:
+        labels:
+          name: app
+          version: v1
+      spec:
+        containers:
+          - name: app1
+            image: chandanunix001/
+            ports:
+              - containerPort: 80
+---
+
+# service
+apiVersion: v1
+kind: Service
+metadata:
+  name: blockchain-service
+spec:
+  type: NodePort
+  selector:
+    name: app
+    version: v1
+  ports:
+  - port: 80
+    targetPort: 80
